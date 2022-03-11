@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>Dalston.RELEASE</version>
+        <version>2021.0.1</version>
         <relativePath></relativePath>
     </parent>
     <modules>
@@ -27,9 +27,9 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <!-- CONFIGURATIONS -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.source>1.8</java.source>
-        <java.target>1.8</java.target>
-        <kotlin.version>1.1.0</kotlin.version>
+        <java.source>11</java.source>
+        <java.target>11</java.target>
+        <kotlin.version>1.6.10</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -74,7 +74,7 @@
         <dependency>
             <!-- Eureka service registration -->
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
         <dependency>
             <!-- Kotlin -->

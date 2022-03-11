@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
     <properties>
         <!-- PLUGINS -->
-        <docker.maven.plugin.fabric8.version>0.21.0</docker.maven.plugin.fabric8.version>
+        <docker.maven.plugin.fabric8.version>0.39.1</docker.maven.plugin.fabric8.version>
         <!-- CONFIGURATIONS -->
         <docker.repo>(YOUR-REPO-NAME)</docker.repo>
         <!-- services properties -->
@@ -48,7 +48,7 @@
                             <!-- Build configuration for creating images -->
                             <!-- ....................................... -->
                             <build>
-                                <from>java:8u40</from>
+                                <from>openjdk:11-jre-slim </from>
                                 <!-- Assembly descriptor holds the reference to the created artifact-->
                                 <assembly>
                                     <descriptor>${basedir}/../registrationservice/src/main/fabric8/assembly.xml
