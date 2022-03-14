@@ -18,6 +18,7 @@
         <!-- services properties -->
         <registration.service.port>1111</registration.service.port>
         <persistence.service.port>2222</persistence.service.port>
+        <timeconsuming.service.port>3333</timeconsuming.service.port>
     </properties>
 
     <dependencies>
@@ -29,6 +30,11 @@
         <dependency>
             <groupId>net.microservices.tutorial</groupId>
             <artifactId>persistenceservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>timeconsumingservice</artifactId>
             <version>0.1</version>
         </dependency>
     </dependencies>
@@ -80,12 +86,12 @@
                                     <SERVICE_PORT>${registration.service.port}</SERVICE_PORT>
                                     <CONTAINER_IP>${docker.container.registrationservice.ip}</CONTAINER_IP>
                                 </env>
-                                <wait>
-                                    <!-- Check for this URL to return a 200 return code .... -->
-                                    <url>http://${docker.host.address}:${registration.service.port}/</url>
-                                    <!-- ... but at max 20 seconds -->
-                                    <time>20000</time>
-                                </wait>
+                                <!--<wait>-->
+                                    <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                    <!--<url>http://${docker.host.address}:${registration.service.port}/</url>-->
+                                    <!--&lt;!&ndash; ... but at max 20 seconds &ndash;&gt;-->
+                                    <!--<time>20000</time>-->
+                                <!--</wait>-->
                                 <log>
                                     <prefix>TC</prefix>
                                     <color>cyan</color>
@@ -101,7 +107,7 @@
                             <!-- Build configuration for creating images -->
                             <!-- ....................................... -->
                             <build>
-                                <from>openjdk:11-jre-slim </from>
+                                <from>openjdk:11-jre-slim</from>
                                 <!-- Assembly descriptor holds the reference to the created artifact-->
                                 <assembly>
                                     <descriptor>${basedir}/../persistenceservice/src/main/fabric8/assembly.xml</descriptor>
@@ -125,12 +131,67 @@
                                 <env>
                                     <SERVICE_PORT>${persistence.service.port}</SERVICE_PORT>
                                 </env>
-                                <wait>
-                                    <!-- Check for this URL to return a 200 return code .... -->
-                                    <url>http://${docker.host.address}:${persistence.service.port}</url>
-                                    <!-- ... but at max 30 seconds -->
-                                    <time>30000</time>
-                                </wait>
+                                <!--<wait>-->
+                                    <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                    <!--<url>http://${docker.host.address}:${persistence.service.port}</url>-->
+                                    <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                    <!--<time>30000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        registrationservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>TC</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Timeconsuming service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>timeconsumingservice</alias>
+                            <name>${docker.repo}/timeconsuming-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>openjdk:11-jre-slim</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../timeconsumingservice/src/main/fabric8/assembly.xml</descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${timeconsuming.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/timeconsumingservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${timeconsuming.service.port}:${timeconsuming.service.port}</port>
+                                </ports>
+                                <env>
+                                    <SERVICE_PORT>${timeconsuming.service.port}</SERVICE_PORT>
+                                </env>
+                                <!--<wait>-->
+                                    <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                    <!--<url>http://${docker.host.address}:${timeconsuming.service.port}</url>-->
+                                    <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                    <!--<time>30000</time>-->
+                                <!--</wait>-->
                                 <dependsOn>
                                     <container>
                                         registrationservice
