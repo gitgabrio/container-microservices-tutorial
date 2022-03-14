@@ -45,10 +45,10 @@ eureka:
 
 #Test db
 testDatasource:
-  jdbcUrl: jdbc:hsqldb:file:testdb
+  jdbc-url: jdbc:hsqldb:file:testdb
   username: SA
   password:
-  driverClassName: org.hsqldb.jdbcDriver
+  driver-class-name: org.hsqldb.jdbcDriver
 
 # Disabling security for Actuator' REST services
 security:
