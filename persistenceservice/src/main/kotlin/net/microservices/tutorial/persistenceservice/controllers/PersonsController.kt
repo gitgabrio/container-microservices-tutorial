@@ -7,7 +7,6 @@ import net.microservices.tutorial.persistenceservice.repositories.PersonReposito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.logging.Logger
-import javax.persistence.EntityNotFoundException
 
 /**
  * A RESTFul controller for accessing user information.
@@ -23,7 +22,7 @@ class PersonsController
  * @param personRepository A repository implementation.
  */
 @Autowired
-constructor(private val personRepository: PersonRepository) /*: AbstractEntityController<UserEntity, Int, PersonRepository>(personRepository) */ {
+constructor(private val personRepository: PersonRepository) {
 
     private var logger = Logger.getLogger(PersonsController::class.java.simpleName)
 

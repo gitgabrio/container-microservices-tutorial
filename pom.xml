@@ -15,6 +15,7 @@
         <module>servicecommon</module>
         <module>registrationservice</module>
         <module>persistenceservice</module>
+        <module>timeconsumingservice</module>
         <module>docker</module>
     </modules>
     <properties>

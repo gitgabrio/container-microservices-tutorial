@@ -1,7 +1,6 @@
 @file:JvmName("PersistenceConfiguration")
 package net.microservices.tutorial.persistenceservice.configurations
 
-//import org.springframework.boot.orm.jpa.EntityScan
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder

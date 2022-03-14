@@ -9,19 +9,11 @@ spring:
   # Trailing / mandatory
   # Template location for this application only
        prefix: classpath:/templates/
+  #Avoid name clashing
+  main:
+    allow-bean-definition-overriding: true
 
-  # Database configuration
-  # Spring Boot automatically creates a JPA EntityManagerFactory using Hibernate
-  # but we need to override some defaults:
-  #
-  #   1. Stop Hibernate automatically creating a schema, we are doing it in
-  #      schema.sql. Instead check the tables match their JPA mapped classes
-  jpa:
-    hibernate:
-      ddl-auto: update
-      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
-    database: HSQL
-    show-sql: true
+
 
 # Map the error path to error template (for Thymeleaf)
 error:
@@ -40,14 +32,6 @@ eureka:
     preferIpAddress: true
     # DO NOT DO THIS IN PRODUCTION
     leaseRenewalIntervalInSeconds: 5
-
-
-#Test db
-testDatasource:
-  jdbc-url: jdbc:hsqldb:file:testdb
-  username: SA
-  password:
-  driver-class-name: org.hsqldb.jdbcDriver
 
 # Disabling security for Actuator' REST services
 security:
