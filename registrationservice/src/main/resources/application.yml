@@ -2,10 +2,10 @@
 eureka:
   instance:
     hostname: ${CONTAINER_IP:@container.ip@}
-    #enableSelfPreservation: false
     preferIpAddress: true
     # DO NOT DO THIS IN PRODUCTION
     leaseRenewalIntervalInSeconds: 5
+    appname: registration-service
 
   client:
     registerWithEureka: false

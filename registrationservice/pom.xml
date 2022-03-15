@@ -15,6 +15,13 @@
         <service.port>1111</service.port>
         <container.ip>localhost</container.ip>
     </properties>
+  <dependencies>
+    <dependency>
+      <!-- Eureka service registration -->
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+  </dependencies>
     <build>
         <finalName>${finalName}</finalName>
     </build>

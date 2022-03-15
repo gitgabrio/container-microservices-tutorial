@@ -1,14 +1,14 @@
 # Spring properties
 spring:
   application:
-    name: timeconsuming-service
-  #Avoid name clashing
+    name: configuration-service
+    #Avoid name clashing
   main:
     allow-bean-definition-overriding: true
 
 # HTTP Server
 server:
-  port: ${SERVICE_PORT:@service.port@}
+  port:  ${SERVICE_PORT:@service.port@}
 
 # Discovery Server Access
 #  1. DEV ONLY: Reduce the lease renewal interval to speed up registration
@@ -21,6 +21,11 @@ eureka:
     serviceUrl:
       defaultZone: http://${RS_PORT_1111_TCP_ADDR:@rs.ip@}:${RS_PORT_1111_TCP_PORT:@rs.port@}/eureka/
 
+persistenceservice:
+  url: http://PERSISTENCE-SERVICE
+timeconsumingservice:
+  url: http://TIMECONSUMING-SERVICE
+
 # Disabling security for Actuator' REST services
 security:
   basic:
@@ -28,3 +33,13 @@ security:
 management:
   security:
     enabled: false
+#  endpoint:
+#    health:
+#      enabled: true
+#    info:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: beans, loggers, actuator
+

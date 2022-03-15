@@ -19,6 +19,7 @@
         <registration.service.port>1111</registration.service.port>
         <persistence.service.port>2222</persistence.service.port>
         <timeconsuming.service.port>3333</timeconsuming.service.port>
+        <configuration.service.port>4444</configuration.service.port>
     </properties>
 
     <dependencies>
@@ -35,6 +36,11 @@
         <dependency>
             <groupId>net.microservices.tutorial</groupId>
             <artifactId>timeconsumingservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>configurationservice</artifactId>
             <version>0.1</version>
         </dependency>
     </dependencies>
@@ -201,6 +207,68 @@
                                     <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
                                     <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
                                     <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>TC</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Configuration service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>configurationservice</alias>
+                            <name>${docker.repo}/configuration-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>openjdk:11-jre-slim</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../configurationservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${configuration.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/configurationservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${configuration.service.port}:${configuration.service.port}</port>
+                                </ports>
+                                <env>
+                                    <SERVICE_PORT>${configuration.service.port}</SERVICE_PORT>
+                                </env>
+                                <!--<wait>-->
+                                <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                <!--<url>http://${docker.host.address}:${timeconsuming.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                <!--<time>30000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        registrationservice
+                                    </container>
+                                    <container>
+                                        persistenceservice
+                                    </container>
+                                    <container>
+                                        timeconsumingservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX, PS_XXX variables, TS_XXX variables -->
+                                    <link>registrationservice:rs, persistenceservice:ps, timeconsumingservice:ts</link>
                                 </links>
                                 <log>
                                     <prefix>TC</prefix>
