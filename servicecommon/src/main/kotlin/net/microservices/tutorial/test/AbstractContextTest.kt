@@ -16,7 +16,6 @@ import org.junit.Assert.assertNotNull
  * Created by Gabriele Cardosi - gcardosi@cardosi.net on 29/05/17.
  */
 @RunWith(SpringInstanceTestClassRunner::class)  // This is to use our custom <code>SpringJUnit4ClassRunner</code>
-//@WebAppConfiguration
 @ActiveProfiles("test")
 abstract class AbstractContextTest : InstanceTestClassListener {
 

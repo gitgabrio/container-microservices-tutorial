@@ -18,6 +18,7 @@
         <module>timeconsumingservice</module>
         <module>configurationservice</module>
         <module>actorserverservice</module>
+        <module>actorclientservice</module>
         <module>docker</module>
     </modules>
     <properties>
