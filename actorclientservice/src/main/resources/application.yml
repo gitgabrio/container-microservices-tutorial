@@ -1,7 +1,7 @@
 # Spring properties
 spring:
   application:
-    name: actorserver-service
+    name: actorclient-service
     #Avoid name clashing
   main:
     allow-bean-definition-overriding: true
@@ -9,6 +9,7 @@ spring:
   freemarker:
     enabled: false           # Ignore Eureka dashboard FreeMarker templates
   thymeleaf:
+    enabled: true
     cache: false             # Allow Thymeleaf templates to be reloaded at runtime
     prefix: classpath:/templates/    # Trailing / mandatory
                              # Template location for this application only
@@ -19,8 +20,7 @@ error:
 
 # HTTP Server
 server:
-  port:  ${SERVICE_PORT:@service.port@}
-
+   port:  ${SERVICE_PORT:@service.port@}
 
 # Discovery Server Access
 #  1. DEV ONLY: Reduce the lease renewal interval to speed up registration
@@ -34,6 +34,10 @@ eureka:
     metadata-map:
       port: ${AKKA_PORT:@akka.port@}
 
+actorserverservice:
+  name: ACTORSERVER-SERVICE
+
+
 management:
   security:
     enabled: false
@@ -46,3 +50,4 @@ management:
     web:
       exposure:
         include: "*"
+
