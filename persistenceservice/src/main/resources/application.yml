@@ -44,3 +44,12 @@ security:
 management:
   security:
     enabled: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
