@@ -1,23 +1,14 @@
+# Spring properties
 spring:
   application:
-    name: persistence-service
-
-  # Database configuration
-  # Spring Boot automatically creates a JPA EntityManagerFactory using Hibernate
-  # but we need to override some defaults:
-  #
-  #   1. Stop Hibernate automatically creating a schema, we are doing it in
-  #      schema.sql. Instead check the tables match their JPA mapped classes
-  jpa:
-    hibernate:
-      ddl-auto: update
-      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
-    database: HSQL
-    show-sql: true
+    name: configuration-service
+    #Avoid name clashing
+  main:
+    allow-bean-definition-overriding: true
 
 # HTTP Server
 server:
-  port: ${SERVICE_PORT:@service.port@}
+  port:  ${SERVICE_PORT:@service.port@}
 
 # Discovery Server Access
 #  1. DEV ONLY: Reduce the lease renewal interval to speed up registration
@@ -30,12 +21,10 @@ eureka:
     serviceUrl:
       defaultZone: http://${RS_PORT_1111_TCP_ADDR:@rs.ip@}:${RS_PORT_1111_TCP_PORT:@rs.port@}/eureka/
 
-#Test db
-testDatasource:
-  jdbc-url: jdbc:hsqldb:file:testdb
-  username: SA
-  password:
-  driver-class-name: org.hsqldb.jdbcDriver
+persistenceservice:
+  url: http://PERSISTENCE-SERVICE
+timeconsumingservice:
+  url: http://TIMECONSUMING-SERVICE
 
 # Disabling security for Actuator' REST services
 security:
@@ -53,3 +42,4 @@ management:
     web:
       exposure:
         include: "*"
+

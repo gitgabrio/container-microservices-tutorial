@@ -27,9 +27,9 @@ abstract class AbstractEntityService<T : InterfaceEntity, ID : Serializable, E :
      * Fetch a <code>&lt;T&gt;</code> entity with the specified <code>&lt;ID&gt;</code>  id.
 
      * @param id <code>&lt;ID&gt;</code>  id.
-     * *
+     *
      * @return The  <code>&lt;T&gt;</code>  entity if found.
-     * *
+     *
      * @throws EntityNotFoundException If the number is not recognised.
      */
     open fun byId(id: ID): T {

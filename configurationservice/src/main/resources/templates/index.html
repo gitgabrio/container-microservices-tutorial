@@ -6,11 +6,25 @@
 
 <body>
 
-<h1>Microservices Demo - Time Consuming Service</h1>
+<h1>Microservices Demo - Configuration Service</h1>
 
-<ul>
-    <li>This <a href="/deferredpersons">service</a> should be called asynchronously.
-    </li>
+<h2>Synchronous requests</h2>
+<ul class="openlist">
+    <li>Fetch <a th:href="@{/users}">all</a> users</li>
+
+    <li>Fetch user #1: <a th:href="@{/users/1}">/users/1</a></li>
+
+    <li>Fetch by surname and name: <a th:href="@{/users/Lee/Keri}">/users/Lee/Keri</a></li>
+
+    <li>User <a th:href="@{/users/search}">Search</a></li>
+</ul>
+
+<h2>Asynchronous requests</h2>
+
+<ul class="openlist">
+    <li>Fetch <a th:href="@{/usersasync}">all</a> users</li>
+
+    <li>Fetch user #1: <a th:href="@{/usersasync/1}">/users/1</a></li>
 </ul>
 
 <h3>Spring Boot URLs</h3>

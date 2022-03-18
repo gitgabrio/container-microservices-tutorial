@@ -5,8 +5,11 @@ import net.microservices.tutorial.dto.UserDTO
 import net.microservices.tutorial.persistenceservice.entities.UserEntity
 import net.microservices.tutorial.persistenceservice.repositories.PersonRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cloud.client.ServiceInstance
+import org.springframework.cloud.client.discovery.DiscoveryClient
 import org.springframework.web.bind.annotation.*
 import java.util.logging.Logger
+
 
 /**
  * A RESTFul controller for accessing user information.
@@ -25,6 +28,15 @@ class PersonsController
 constructor(private val personRepository: PersonRepository) {
 
     private var logger = Logger.getLogger(PersonsController::class.java.simpleName)
+
+    @Autowired
+    private val discoveryClient: DiscoveryClient? = null
+
+    @RequestMapping("/service-instances/{applicationName}")
+    fun serviceInstancesByApplicationName(
+        @PathVariable applicationName: String?): List<ServiceInstance?>? {
+        return discoveryClient?.getInstances(applicationName)
+    }
 
     /**
      * Fetch a <code>UserDTO</code> with the specified id.
