@@ -1,0 +1,54 @@
+# Spring properties
+spring:
+  application:
+    name: actorserver-service
+    #Avoid name clashing
+  main:
+    allow-bean-definition-overriding: true
+
+  freemarker:
+    enabled: false           # Ignore Eureka dashboard FreeMarker templates
+  thymeleaf:
+    cache: false             # Allow Thymeleaf templates to be reloaded at runtime
+    prefix: classpath:/templates/    # Trailing / mandatory
+                             # Template location for this application only
+
+# Map the error path to error template (for Thymeleaf)
+error:
+  path: /error
+
+# HTTP Server
+server:
+  port:  ${SERVICE_PORT:@service.port@}
+
+akka:
+  remote:
+    netty:
+      tcp:
+        hostname: ${CONTAINER_IP:@container.ip@}
+
+
+# Discovery Server Access
+#  1. DEV ONLY: Reduce the lease renewal interval to speed up registration
+#  2. Define URL of registration server (defaultZone)
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${RS_PORT_1111_TCP_ADDR:@rs.ip@}:${RS_PORT_1111_TCP_PORT:@rs.port@}/eureka/
+  instance:
+    leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
+    metadata-map:
+      port: ${AKKA_PORT:@akka.port@}
+
+management:
+  security:
+    enabled: false
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"

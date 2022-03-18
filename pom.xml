@@ -16,8 +16,9 @@
         <module>registrationservice</module>
         <module>persistenceservice</module>
         <module>timeconsumingservice</module>
-        <module>docker</module>
         <module>configurationservice</module>
+        <module>actorserverservice</module>
+        <module>docker</module>
     </modules>
     <properties>
         <!-- TEST -->
