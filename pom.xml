@@ -17,6 +17,7 @@
         <module>persistenceservice</module>
         <module>timeconsumingservice</module>
         <module>configurationservice</module>
+        <module>akkaclusterservice</module>
         <module>actorserverservice</module>
         <module>actorclientservice</module>
         <module>docker</module>

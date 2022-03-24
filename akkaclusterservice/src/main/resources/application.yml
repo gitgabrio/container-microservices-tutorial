@@ -1,7 +1,7 @@
 # Spring properties
 spring:
   application:
-    name: actorclient-service
+    name: akkacluster-service
     #Avoid name clashing
   main:
     allow-bean-definition-overriding: true
@@ -9,7 +9,6 @@ spring:
   freemarker:
     enabled: false           # Ignore Eureka dashboard FreeMarker templates
   thymeleaf:
-    enabled: true
     cache: false             # Allow Thymeleaf templates to be reloaded at runtime
     prefix: classpath:/templates/    # Trailing / mandatory
                              # Template location for this application only
@@ -20,7 +19,8 @@ error:
 
 # HTTP Server
 server:
-   port:  ${SERVICE_PORT:@service.port@}
+  port:  ${SERVICE_PORT:@service.port@}
+
 
 # Discovery Server Access
 #  1. DEV ONLY: Reduce the lease renewal interval to speed up registration
@@ -28,15 +28,14 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone:  ${DEFAULT_ZONE:http://@rs.ip@:@rs.port@}/eureka/
+      defaultZone: ${DEFAULT_ZONE:http://@rs.ip@:@rs.port@}/eureka/
   instance:
     preferIpAddress: true
     leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
     metadata-map:
       port: ${AKKA_PORT:@akka.port@}
-
-akkaclusterservicename:
-  name: AKKACLUSTER-SERVICE
+      seed_port1: ${SEED_PORT_1:@seed.port1@}
+      seed_port2: ${SEED_PORT_2:@seed.port2@}
 
 management:
   security:
@@ -50,4 +49,3 @@ management:
     web:
       exposure:
         include: "*"
-

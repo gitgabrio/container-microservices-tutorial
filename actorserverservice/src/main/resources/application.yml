@@ -28,11 +28,17 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${RS_PORT_1111_TCP_ADDR:@rs.ip@}:${RS_PORT_1111_TCP_PORT:@rs.port@}/eureka/
+      defaultZone:  ${DEFAULT_ZONE:http://@rs.ip@:@rs.port@}/eureka/
   instance:
+    preferIpAddress: true
     leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
     metadata-map:
       port: ${AKKA_PORT:@akka.port@}
+#      seed_port1: ${SEED_PORT_1:@seed.port1@}
+#      seed_port2: ${SEED_PORT_2:@seed.port2@}
+
+akkaclusterservicename:
+  name: AKKACLUSTER-SERVICE
 
 management:
   security:
