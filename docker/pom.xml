@@ -22,9 +22,10 @@
         <configuration.service.port>4444</configuration.service.port>
         <actorserver.service.port>5555</actorserver.service.port>
         <actorclient.service.port>6666</actorclient.service.port>
+        <akkacluster.service.port>7777</akkacluster.service.port>
         <!-- Images to build and run - default to all-->
         <images>registrationservice, persistenceservice, timeconsumingservice, configurationservice,
-            actorserverservice, actorclientservice
+            actorserverservice, actorclientservice, akkaclusterservice
         </images>
     </properties>
 
@@ -39,7 +40,7 @@
         <profile>
             <id>akka</id>
             <properties>
-                <images>registrationservice, actorserverservice, actorclientservice
+                <images>registrationservice, akkaclusterservice, actorclientservice, actorserverservice
                 </images>
             </properties>
         </profile>
@@ -74,6 +75,11 @@
         <dependency>
             <groupId>net.microservices.tutorial</groupId>
             <artifactId>actorclientservice</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.microservices.tutorial</groupId>
+            <artifactId>akkaclusterservice</artifactId>
             <version>0.1</version>
         </dependency>
     </dependencies>
@@ -126,14 +132,14 @@
                                     <SERVICE_PORT>${registration.service.port}</SERVICE_PORT>
                                     <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
                                 </env>
-                                <!--<wait>-->
-                                    <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
-                                    <!--<url>http://${docker.host.address}:${registration.service.port}/</url>-->
-                                    <!--&lt;!&ndash; ... but at max 20 seconds &ndash;&gt;-->
-                                    <!--<time>20000</time>-->
-                                <!--</wait>-->
+                                <wait>
+                                    <!-- Check for this URL to return a 200 return code .... -->
+                                    <url>http://${docker.host.address}:${registration.service.port}</url>
+                                    <!-- ... but at max 90 seconds -->
+                                    <time>90000</time>
+                                </wait>
                                 <log>
-                                    <prefix>TC</prefix>
+                                    <prefix>REG_SER</prefix>
                                     <color>cyan</color>
                                 </log>
                             </run>
@@ -169,6 +175,7 @@
                                     <port>${persistence.service.port}:${persistence.service.port}</port>
                                 </ports>
                                 <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
                                     <SERVICE_PORT>${persistence.service.port}</SERVICE_PORT>
                                 </env>
                                 <!--<wait>-->
@@ -188,7 +195,7 @@
                                     <link>registrationservice:rs</link>
                                 </links>
                                 <log>
-                                    <prefix>TC</prefix>
+                                    <prefix>PER_SER</prefix>
                                     <color>cyan</color>
                                 </log>
                             </run>
@@ -224,6 +231,7 @@
                                     <port>${timeconsuming.service.port}:${timeconsuming.service.port}</port>
                                 </ports>
                                 <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
                                     <SERVICE_PORT>${timeconsuming.service.port}</SERVICE_PORT>
                                 </env>
                                 <!--<wait>-->
@@ -243,7 +251,7 @@
                                     <link>registrationservice:rs</link>
                                 </links>
                                 <log>
-                                    <prefix>TC</prefix>
+                                    <prefix>TIM_SER</prefix>
                                     <color>cyan</color>
                                 </log>
                             </run>
@@ -280,6 +288,7 @@
                                     <port>${configuration.service.port}:${configuration.service.port}</port>
                                 </ports>
                                 <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
                                     <SERVICE_PORT>${configuration.service.port}</SERVICE_PORT>
                                 </env>
                                 <!--<wait>-->
@@ -305,16 +314,16 @@
                                     <link>registrationservice:rs, persistenceservice:ps, timeconsumingservice:ts</link>
                                 </links>
                                 <log>
-                                    <prefix>TC</prefix>
+                                    <prefix>CON_SER</prefix>
                                     <color>cyan</color>
                                 </log>
                             </run>
                         </image>
-                        <!-- Actor server service -->
+                        <!-- Akka cluster service -->
                         <image>
                             <!-- Alias name which can used for linking containers during runtime -->
-                            <alias>actorserverservice</alias>
-                            <name>${docker.repo}/actorserver-service:${project.version}</name>
+                            <alias>akkaclusterservice</alias>
+                            <name>${docker.repo}/akkacluster-service:${project.version}</name>
                             <!-- ....................................... -->
                             <!-- Build configuration for creating images -->
                             <!-- ....................................... -->
@@ -322,15 +331,15 @@
                                 <from>openjdk:11-jre-slim</from>
                                 <!-- Assembly descriptor holds the reference to the created artifact-->
                                 <assembly>
-                                    <descriptor>${basedir}/../actorserverservice/src/main/fabric8/assembly.xml
+                                    <descriptor>${basedir}/../akkaclusterservice/src/main/fabric8/assembly.xml
                                     </descriptor>
                                 </assembly>
                                 <!-- Expose ports -->
                                 <ports>
-                                    <port>${actorserver.service.port}</port>
+                                    <port>${akkacluster.service.port}</port>
                                 </ports>
                                 <!-- Default command for the build image -->
-                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/actorserverservice.jar
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/akkaclusterservice.jar
                                 </cmd>
                             </build>
                             <!-- ............................................................... -->
@@ -339,18 +348,19 @@
                             <run>
                                 <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
                                 <ports>
-                                    <port>${actorserver.service.port}:${actorserver.service.port}</port>
+                                    <port>${akkacluster.service.port}:${akkacluster.service.port}</port>
                                 </ports>
                                 <env>
-                                    <SERVICE_PORT>${actorserver.service.port}</SERVICE_PORT>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${akkacluster.service.port}</SERVICE_PORT>
                                     <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
                                 </env>
-                                <!--<wait>-->
-                                <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
-                                <!--<url>http://${docker.host.address}:${actorserver.service.port}</url>-->
-                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
-                                <!--<time>30000</time>-->
-                                <!--</wait>-->
+                                <wait>
+                                    <!-- Check for this URL to return a 200 return code .... -->
+                                    <url>http://${docker.host.address}:${akkacluster.service.port}</url>
+                                    <!-- ... but at max 90 seconds -->
+                                    <time>90000</time>
+                                </wait>
                                 <dependsOn>
                                     <container>
                                         registrationservice
@@ -362,7 +372,7 @@
                                     <link>registrationservice:rs</link>
                                 </links>
                                 <log>
-                                    <prefix>TC</prefix>
+                                    <prefix>AKK_SER</prefix>
                                     <color>cyan</color>
                                 </log>
                             </run>
@@ -399,18 +409,19 @@
                                     <port>${actorclient.service.port}:${actorclient.service.port}</port>
                                 </ports>
                                 <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
                                     <SERVICE_PORT>${actorclient.service.port}</SERVICE_PORT>
                                     <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
                                 </env>
                                 <!--<wait>-->
                                 <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
-                                <!--<url>http://${docker.host.address}:${actorserver.service.port}</url>-->
-                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
-                                <!--<time>30000</time>-->
+                                <!--<url>http://${docker.host.address}:${actorclient.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 90 seconds &ndash;&gt;-->
+                                <!--<time>90000</time>-->
                                 <!--</wait>-->
                                 <dependsOn>
                                     <container>
-                                        registrationservice
+                                        akkaclusterservice
                                     </container>
                                 </dependsOn>
                                 <links>
@@ -419,7 +430,65 @@
                                     <link>registrationservice:rs</link>
                                 </links>
                                 <log>
-                                    <prefix>TC</prefix>
+                                    <prefix>AKC_SER</prefix>
+                                    <color>cyan</color>
+                                </log>
+                            </run>
+                        </image>
+                        <!-- Actor server service -->
+                        <image>
+                            <!-- Alias name which can used for linking containers during runtime -->
+                            <alias>actorserverservice</alias>
+                            <name>${docker.repo}/actorserver-service:${project.version}</name>
+                            <!-- ....................................... -->
+                            <!-- Build configuration for creating images -->
+                            <!-- ....................................... -->
+                            <build>
+                                <from>openjdk:11-jre-slim</from>
+                                <!-- Assembly descriptor holds the reference to the created artifact-->
+                                <assembly>
+                                    <descriptor>${basedir}/../actorserverservice/src/main/fabric8/assembly.xml
+                                    </descriptor>
+                                </assembly>
+                                <!-- Expose ports -->
+                                <ports>
+                                    <port>${actorserver.service.port}</port>
+                                </ports>
+                                <!-- Default command for the build image -->
+                                <cmd>java -Djava.security.egd=file:/dev/./urandom -jar /maven/actorserverservice.jar
+                                </cmd>
+                            </build>
+                            <!-- ............................................................... -->
+                            <!-- Runtime configuration for starting/stopping/linking containers -->
+                            <!-- ............................................................... -->
+                            <run>
+                                <!-- Assign dynamically mapped ports to maven variables (which can be reused in integration tests) -->
+                                <ports>
+                                    <port>${actorserver.service.port}:${actorserver.service.port}</port>
+                                </ports>
+                                <env>
+                                    <DEFAULT_ZONE>http://rs:${registration.service.port}</DEFAULT_ZONE>
+                                    <SERVICE_PORT>${actorserver.service.port}</SERVICE_PORT>
+                                    <CONTAINER_IP>${docker.host.address}</CONTAINER_IP>
+                                </env>
+                                <!--<wait>-->
+                                    <!--&lt;!&ndash; Check for this URL to return a 200 return code .... &ndash;&gt;-->
+                                <!--<url>http://${docker.host.address}:${actorserver.service.port}</url>-->
+                                <!--&lt;!&ndash; ... but at max 30 seconds &ndash;&gt;-->
+                                <!--<time>30000</time>-->
+                                <!--</wait>-->
+                                <dependsOn>
+                                    <container>
+                                        akkaclusterservice
+                                    </container>
+                                </dependsOn>
+                                <links>
+                                    <!-- Links can be referenced via alias (registrationservice) or name (${docker.repo}/registration-service:${project.version}) -->
+                                    <!-- THIS SHOULD CREATE SOME RS_XXX variables -->
+                                    <link>registrationservice:rs</link>
+                                </links>
+                                <log>
+                                    <prefix>AKS_SER</prefix>
                                     <color>cyan</color>
                                 </log>
                             </run>
