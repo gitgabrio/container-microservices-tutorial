@@ -13,11 +13,12 @@
     <properties>
         <!-- PLUGINS -->
         <docker.maven.plugin.fabric8.version>0.39.1</docker.maven.plugin.fabric8.version>
-        <!-- CONFIGURATIONS -->
-        <docker.repo>(YOUR-REPO-NAME)</docker.repo>
-        <!-- services properties -->
+      <!-- CONFIGURATIONS -->
+      <!-- define docker.repo personal property inside .m2/settings.xml -->
+      <!--        <docker.repo></docker.repo>-->
+      <!-- services properties -->
         <registration.service.port>1111</registration.service.port>
-    </properties>
+            </properties>
 
     <dependencies>
         <dependency>
