@@ -28,7 +28,11 @@ open class ActorServerServer {
          * *            Program arguments - ignored.
          */
         @JvmStatic fun main(args: Array<String>) {
-            SpringApplication.run(ActorServerServer::class.java, *args)
+            try {
+                SpringApplication.run(ActorServerServer::class.java, *args)
+            } catch (e: Exception) {
+                e.stackTrace
+            }
         }
     }
 

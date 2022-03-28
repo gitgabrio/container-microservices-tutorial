@@ -68,10 +68,10 @@ open class ActorServerConfiguration {
         logger.info("akkaClusterServiceName $akkaClusterServiceName")
         val akkaClusterService: Application? = eurekaClient?.getApplication(akkaClusterServiceName)
         logger.info("akkaClusterService ? " + akkaClusterService!!.name)
-        akkaClusterService?.shuffleAndStoreInstances(true)
-        val instances: List<InstanceInfo>? = akkaClusterService?.instances
+        akkaClusterService.shuffleAndStoreInstances(true)
+        val instances: List<InstanceInfo>? = akkaClusterService.instances
         var toReturn: InstanceInfo? = null
-        if (instances != null && instances.size > 0) {
+        if (instances != null && instances.isNotEmpty()) {
             toReturn = instances[0]
         }
         return toReturn
@@ -89,7 +89,7 @@ open class ActorServerConfiguration {
         var toReturn: Config = ConfigFactory.defaultApplication()
                 .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(hostName))
                 .withValue("akka.remote.netty.tcp.port", ConfigValueFactory.fromAnyRef(akkaPort))
-        if (!seedNodes.isEmpty()) {
+        if (seedNodes.isNotEmpty()) {
             toReturn = toReturn
                     .withValue("akka.cluster.seed-nodes", ConfigValueFactory.fromIterable(seedNodes))
     }

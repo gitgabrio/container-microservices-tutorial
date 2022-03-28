@@ -14,11 +14,11 @@ import akka.event.LoggingAdapter
 import net.microservices.tutorial.akkaclusterservice.services.HomeService
 import org.springframework.beans.factory.annotation.Autowired
 
-class MetricsListenerActor(val homeService: HomeService) : AbstractActor() {
+class MetricsListenerActor(private val homeService: HomeService) : AbstractActor() {
 
-    internal var log = Logging.getLogger(context.system(), this)
-    internal var cluster = Cluster.get(context.system())
-    internal var extension = ClusterMetricsExtension.get(context.system())
+    private var log = Logging.getLogger(context.system(), this)
+    private var cluster = Cluster.get(context.system())
+    private var extension = ClusterMetricsExtension.get(context.system())
 
     // Subscribe unto ClusterMetricsEvent events.
     override fun preStart() {
@@ -38,12 +38,12 @@ class MetricsListenerActor(val homeService: HomeService) : AbstractActor() {
                     logCpu(nodeMetrics)
                 }
             }
-        }.match(CurrentClusterState::class.java) { message ->
+        }.match(CurrentClusterState::class.java) { _ ->
             // Ignore.
         }.build()
     }
 
-    internal fun logHeap(nodeMetrics: NodeMetrics) {
+    private fun logHeap(nodeMetrics: NodeMetrics) {
         val heap = StandardMetrics.extractHeapMemory(nodeMetrics)
         if (heap != null) {
             val heapMemory = heap.used().toDouble() / 1024.0 / 1024.0
@@ -51,7 +51,7 @@ class MetricsListenerActor(val homeService: HomeService) : AbstractActor() {
         }
     }
 
-    internal fun logCpu(nodeMetrics: NodeMetrics) {
+    private fun logCpu(nodeMetrics: NodeMetrics) {
         val cpu = StandardMetrics.extractCpu(nodeMetrics)
         if (cpu != null && cpu.systemLoadAverage().isDefined) {
             homeService.processors = cpu.processors()

@@ -19,10 +19,11 @@ l
 @Controller
 class UsersController(
 
-        @Autowired
-        protected var usersService: UsersService) {
+    @Autowired
+    private var usersService: UsersService
+) {
 
-    protected var logger = Logger.getLogger(UsersController::class.java.name)
+    private var logger = Logger.getLogger(UsersController::class.java.name)
 
     @InitBinder
     fun initBinder(binder: WebDataBinder) {

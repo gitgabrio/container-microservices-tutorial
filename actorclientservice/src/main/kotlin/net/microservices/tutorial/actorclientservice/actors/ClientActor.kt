@@ -19,7 +19,7 @@ import java.util.logging.Logger
 open class ClientActor() : AbstractActor() {
 
 
-    protected var logger = Logger.getLogger(ClientActor::class.java.simpleName)
+    private var logger = Logger.getLogger(ClientActor::class.java.simpleName)
 
     //subscribe to MemberUp events
     override fun preStart() {

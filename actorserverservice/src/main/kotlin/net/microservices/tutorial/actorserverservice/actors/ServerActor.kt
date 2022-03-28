@@ -1,19 +1,17 @@
 @file:JvmName("ServerActor")
 package net.microservices.tutorial.actorserverservice.actors
 
-import akka.japi.pf.ReceiveBuilder
 import akka.actor.AbstractActor
 import akka.cluster.Cluster
 import akka.cluster.ClusterEvent
 import akka.cluster.Member
 import akka.cluster.MemberStatus
+import akka.japi.pf.ReceiveBuilder
 import net.microservices.tutorial.actorserverservice.services.UsersService
 import net.microservices.tutorial.commands.Command
-import net.microservices.tutorial.dto.UserDTO
 import net.microservices.tutorial.messages.AkkaMessage
 import net.microservices.tutorial.messages.AkkaResponse
 import net.microservices.tutorial.messages.ServerActorRegistration
-import java.util.*
 import java.util.logging.Logger
 
 /**
@@ -72,7 +70,7 @@ open class ServerActor(private val usersService: UsersService) : AbstractActor()
         when (message.command) {
             Command.CREATE -> {
                 if (!usersService.users.contains(message.user.id)) {
-                    usersService.users.put(message.user.id!!, message.user)
+                    usersService.users[message.user.id!!] = message.user
                     done = true
                 }
             }

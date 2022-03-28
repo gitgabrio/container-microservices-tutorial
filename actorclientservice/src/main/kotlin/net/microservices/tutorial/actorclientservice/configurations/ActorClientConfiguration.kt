@@ -2,8 +2,9 @@
 
 package net.microservices.tutorial.actorclientservice.configurations
 
-import akka.actor.*
-import java.util.concurrent.TimeUnit.SECONDS
+import akka.actor.ActorRef
+import akka.actor.ActorSystem
+import akka.actor.Props
 import com.netflix.appinfo.InstanceInfo
 import com.netflix.discovery.EurekaClient
 import com.netflix.discovery.shared.Application
@@ -12,7 +13,6 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValueFactory
 import net.microservices.tutorial.actorclientservice.actors.ClientActor
 import net.microservices.tutorial.classes.createUserDTO
-import net.microservices.tutorial.classes.notNull
 import net.microservices.tutorial.commands.Command
 import net.microservices.tutorial.dto.UserDTO
 import net.microservices.tutorial.messages.AkkaMessage
@@ -23,6 +23,7 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import scala.concurrent.duration.Duration
 import java.util.*
+import java.util.concurrent.TimeUnit.SECONDS
 import java.util.logging.Logger
 
 /**
@@ -50,10 +51,10 @@ open class ActorClientConfiguration {
     @Bean
     open fun actorSystem(): ActorSystem? {
         val instanceInfo = getRemoteInstanceInfo()
-        if (instanceInfo != null) {
-            return getSystem(instanceInfo)
+        return if (instanceInfo != null) {
+            getSystem(instanceInfo)
         } else {
-            return null
+            null
         }
     }
 
@@ -65,10 +66,12 @@ open class ActorClientConfiguration {
         var counter: Int = 1
         system.scheduler().schedule(Duration.create(1, SECONDS),
                 Duration.create(1, SECONDS), Runnable {
-            val userDto : UserDTO = createUserDTO(r.nextInt(50))
-            val command: Command = Command.values()[r.nextInt(4)]
-            clientActor.tell(AkkaMessage(userDto, command, counter), null)
-            counter ++
+                while (counter < 10) {
+                    val userDto: UserDTO = createUserDTO(r.nextInt(50))
+                    val command: Command = Command.values()[r.nextInt(4)]
+                    clientActor.tell(AkkaMessage(userDto, command, counter), null)
+                    counter++
+                }
         }, system.dispatcher())
         return system
     }
@@ -77,10 +80,10 @@ open class ActorClientConfiguration {
         logger.info("akkaClusterServiceName $akkaClusterServiceName")
         val akkaClusterService: Application? = eurekaClient?.getApplication(akkaClusterServiceName)
         logger.info("akkaClusterService ? " + akkaClusterService!!.name)
-        akkaClusterService?.shuffleAndStoreInstances(true)
-        val instances: List<InstanceInfo>? = akkaClusterService?.instances
+        akkaClusterService.shuffleAndStoreInstances(true)
+        val instances: List<InstanceInfo>? = akkaClusterService.instances
         var toReturn: InstanceInfo? = null
-        if (instances != null && instances.size > 0) {
+        if (instances != null && instances.isNotEmpty()) {
             toReturn = instances[0]
         }
         return toReturn
@@ -98,7 +101,7 @@ open class ActorClientConfiguration {
         var toReturn: Config = ConfigFactory.defaultApplication()
                 .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(hostName))
                 .withValue("akka.remote.netty.tcp.port", ConfigValueFactory.fromAnyRef(akkaPort))
-        if (!seedNodes.isEmpty()) {
+        if (seedNodes.isNotEmpty()) {
             toReturn = toReturn
                     .withValue("akka.cluster.seed-nodes", ConfigValueFactory.fromIterable(seedNodes))
         }

@@ -49,14 +49,12 @@ open class AkkaClusterConfiguration {
         startClusterListener(seedPort1, "clusterListenerActor1", homeService)
         startClusterListener(seedPort2, "clusterListenerActor2", homeService)
         val defaultApplication: Config = getConfig(akkaPort)
-        val toReturn = ActorSystem.create(SYSTEM_NAME, defaultApplication)
-        return toReturn
+        return ActorSystem.create(SYSTEM_NAME, defaultApplication)
     }
 
     @Bean
     open fun metricsListenerActor(akkaClusterSystem: ActorSystem, homeService: HomeService): ActorRef {
-        val toReturn = akkaClusterSystem.actorOf(Props.create(MetricsListenerActor::class.java, homeService), "metricsListener")
-        return toReturn
+        return akkaClusterSystem.actorOf(Props.create(MetricsListenerActor::class.java, homeService), "metricsListener")
     }
 
     @Bean
@@ -72,12 +70,12 @@ open class AkkaClusterConfiguration {
 
     private fun getConfig(tcpPort: Int): Config {
         val hostName = eurekaClient?.applicationInfoManager?.info?.ipAddr ?: "hostname"
-        val seedNodes = listOf("akka.tcp://$SYSTEM_NAME@$hostName:$seedPort1", "akka.tcp://$SYSTEM_NAME@$hostName:$seedPort2")
-        val toReturn: Config = ConfigFactory.defaultApplication()
-                .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(hostName))
-                .withValue("akka.remote.netty.tcp.port", ConfigValueFactory.fromAnyRef(tcpPort))
-                .withValue("akka.cluster.seed-nodes", ConfigValueFactory.fromIterable(seedNodes))
-        return toReturn
+        val seedNodes =
+            listOf("akka.tcp://$SYSTEM_NAME@$hostName:$seedPort1", "akka.tcp://$SYSTEM_NAME@$hostName:$seedPort2")
+        return ConfigFactory.defaultApplication()
+            .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(hostName))
+            .withValue("akka.remote.netty.tcp.port", ConfigValueFactory.fromAnyRef(tcpPort))
+            .withValue("akka.cluster.seed-nodes", ConfigValueFactory.fromIterable(seedNodes))
     }
 
 }
