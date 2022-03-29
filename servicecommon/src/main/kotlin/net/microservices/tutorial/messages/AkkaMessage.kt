@@ -7,7 +7,9 @@ import java.io.Serializable
 /**
  * Created by Gabriele Cardosi - gcardosi@cardosi.net on 30/07/17.
  */
-open class AkkaMessage(val user: UserDTO, val command: Command, val id: Int) : Serializable {
+open class AkkaMessage(val user: UserDTO?, val command: Command?, val id: Int) : Serializable {
+
+    constructor() : this(null, null, -1)
 
     override fun toString(): String{
         return "AkkaMessage(command=$command, user=$user, id=$id)"

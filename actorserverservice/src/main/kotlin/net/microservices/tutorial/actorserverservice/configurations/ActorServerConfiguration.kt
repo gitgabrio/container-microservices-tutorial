@@ -10,6 +10,7 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigValueFactory
 import net.microservices.tutorial.actorserverservice.actors.ServerActor
+import net.microservices.tutorial.actorserverservice.components.KafkaSender
 import net.microservices.tutorial.actorserverservice.controllers.HomeController
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -17,6 +18,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+
 
 /**
  * Created by Gabriele Cardosi - gcardosi@cardosi.net on 04/11/2016.
@@ -29,22 +31,26 @@ open class ActorServerConfiguration {
     @Value("\${eureka.instance.metadata-map.port}")
     var akkaPort: Int = 0
 
+    @Value("\${spring.kafka.bootstrap-servers}")
+    private val bootstrapServers: String = ""
+
 //    @Value("\${akka.remote.netty.tcp.hostname}")
 //    var akkaHostName: String = ""
 
     @Autowired
     private val eurekaClient: EurekaClient? = null
 
-
+    @Autowired
+    private val kafkaSender: KafkaSender? = null
 
     @Bean
     open fun actorSystem(): ActorSystem {
         val hostName = eurekaClient?.applicationInfoManager?.info?.ipAddr ?: "hostname"
         val defaultApplication: Config = ConfigFactory.defaultApplication()
-                .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(hostName))
-                .withValue("akka.remote.netty.tcp.port", ConfigValueFactory.fromAnyRef(akkaPort))
+            .withValue("akka.remote.netty.tcp.hostname", ConfigValueFactory.fromAnyRef(hostName))
+            .withValue("akka.remote.netty.tcp.port", ConfigValueFactory.fromAnyRef(akkaPort))
         val system = ActorSystem.create("RemoteWorkerSystem", defaultApplication)
-        system.actorOf(Props.create(ServerActor::class.java), "serverActor")
+        system.actorOf(Props.create(ServerActor::class.java, kafkaSender), "serverActor")
         return system
     }
 
@@ -52,5 +58,6 @@ open class ActorServerConfiguration {
     open fun homeController(): HomeController {
         return HomeController()
     }
+
 
 }

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import java.util.logging.Logger
 import javax.sql.DataSource
 
+
 /**
  * The users Spring configuration.
  *
@@ -22,7 +23,7 @@ import javax.sql.DataSource
 @EnableJpaRepositories("net.microservices.tutorial.persistenceservice.repositories")
 open class PersistenceConfiguration {
 
-    private var logger: Logger = Logger.getLogger(javaClass.name)
+    private val logger: Logger = Logger.getLogger(javaClass.name)
 
     @Bean
     @Primary
@@ -31,7 +32,5 @@ open class PersistenceConfiguration {
         logger.info("dataSource() invoked")
         return DataSourceBuilder.create().build()
     }
-
-
 
 }

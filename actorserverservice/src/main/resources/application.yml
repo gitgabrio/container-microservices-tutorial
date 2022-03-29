@@ -13,6 +13,12 @@ spring:
     prefix: classpath:/templates/    # Trailing / mandatory
                              # Template location for this application only
 
+  # Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: myGroup
+
 # Map the error path to error template (for Thymeleaf)
 error:
   path: /error

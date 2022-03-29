@@ -44,8 +44,7 @@ constructor(private val personRepository: PersonRepository) {
      * @param id A Integer
      * *
      * @return The user if found.
-     * *
-     * @throws EntityNotFoundException If the number is not recognised.
+     *
      */
     @RequestMapping("/persons/{id}")
     fun byId(@PathVariable("id") id: Int): UserDTO? {
