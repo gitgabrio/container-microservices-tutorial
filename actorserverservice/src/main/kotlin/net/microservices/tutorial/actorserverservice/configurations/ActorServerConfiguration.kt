@@ -48,12 +48,13 @@ open class ActorServerConfiguration {
     @Bean
     open fun actorSystem(usersService: UsersService): ActorSystem? {
         val instanceInfo = getRemoteInstanceInfo()
-        if (instanceInfo != null) {
+        return if (instanceInfo != null) {
             logger.info("instanceInfo ${instanceInfo.hostName} ")
-            return getSystem(instanceInfo, usersService)
+            logger.info("usersService $usersService")
+            getSystem(instanceInfo, usersService)
         } else {
             logger.severe("instanceInfo NOT FOUND ")
-            return null
+            null
         }
     }
 

@@ -33,8 +33,8 @@ class UsersController(
     @RequestMapping("/users")
     fun allUsers(model: Model): String {
         logger.info("UsersController allUsers() invoked")
-        val users = usersService.users.values
-        logger.info("UsersController allUsers() found: " + users)
+        val users = usersService.findAll()
+        logger.info("UsersController allUsers() found: $users")
         model.addAttribute("users", users)
         return "users"
     }

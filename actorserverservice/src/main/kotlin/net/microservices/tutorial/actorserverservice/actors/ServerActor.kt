@@ -22,7 +22,7 @@ open class ServerActor(private val usersService: UsersService) : AbstractActor()
 
     private var logger = Logger.getLogger(ServerActor::class.java.simpleName)
 
-    internal var cluster = Cluster.get(context.system())
+    private var cluster = Cluster.get(context.system())
 
     //subscribe to MemberUp events
     override fun preStart() {
@@ -69,24 +69,25 @@ open class ServerActor(private val usersService: UsersService) : AbstractActor()
         var done: Boolean = false
         when (message.command) {
             Command.CREATE -> {
-                if (!usersService.users.contains(message.user.id)) {
-                    usersService.users[message.user.id!!] = message.user
+                if (message.user.id?.let { usersService.findByNumber(it) } == null) {
+                    usersService.saveUser(message.user)
                     done = true
                 }
             }
             Command.READ -> {
-                if (usersService.users.contains(message.user.id)) {
+                if (message.user.id?.let { usersService.findByNumber(it) } != null) {
                     done = true
                 }
             }
             Command.UPDATE -> {
-                if (usersService.users.contains(message.user.id)) {
+                if (message.user.id?.let { usersService.findByNumber(it) } == null) {
+                    usersService.updateUser(message.user)
                     done = true
                 }
             }
             Command.DELETE -> {
-                if (usersService.users.contains(message.user.id)) {
-                    usersService.users.remove(message.user.id!!)
+                if (message.user.id?.let { usersService.findByNumber(it) } == null) {
+                    usersService.deleteUser(message.user)
                     done = true
                 }
             }
