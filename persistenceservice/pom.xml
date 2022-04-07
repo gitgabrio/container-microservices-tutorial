@@ -13,7 +13,7 @@
 
     <properties>
         <start-class>net.microservices.tutorial.persistenceservice.PersistenceServer</start-class>
-        <finalName>registrationservice-${project.version}</finalName>
+        <finalName>persistenceservice-${project.version}</finalName>
         <service.port>2222</service.port>
         <container.ip>localhost</container.ip>
         <rs.port>1111</rs.port>

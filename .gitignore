@@ -134,3 +134,4 @@ serviceparent/serviceparent.iml
 
 /persistenceservice/testdb.*
 *.iml
+/testdb.log

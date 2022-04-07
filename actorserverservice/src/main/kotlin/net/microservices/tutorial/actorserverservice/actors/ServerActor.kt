@@ -39,8 +39,8 @@ open class ServerActor constructor(private val kafkaSender: KafkaSender) : Abstr
         var done: Boolean = false
         when (message.command) {
             Command.CREATE -> {
-                if (!users.contains(message.user.id)) {
-                    users[message.user.id!!] = message.user
+                if (!users.contains(message.user?.id)) {
+                    users[message.user?.id!!] = message.user
                     kafkaSender.sendMessage(message, topicName)
                     done = true
                 }
@@ -64,6 +64,7 @@ open class ServerActor constructor(private val kafkaSender: KafkaSender) : Abstr
                     done = true
                 }
             }
+            else -> {}
         }
         return AkkaResponse(done, message.id)
     }

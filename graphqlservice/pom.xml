@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>container-microservice</artifactId>
+    <groupId>net.microservices.tutorial</groupId>
+    <version>0.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>graphqlservice</artifactId>
+  <version>0.1</version>
+
+  <properties>
+    <finalName>graphqlservice-${project.version}</finalName>
+    <service.port>8888</service.port>
+    <container.ip>localhost</container.ip>
+    <rs.port>1111</rs.port>
+    <rs.ip>localhost</rs.ip>
+    <graphql.java.version>11.0</graphql.java.version>
+    <graphql.java.spring.boot.starter.webmvc.version>1.0</graphql.java.spring.boot.starter.webmvc.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.graphql-java</groupId>
+        <artifactId>graphql-java</artifactId>
+        <version>${graphql.java.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.graphql-java</groupId>
+        <artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+        <version>${graphql.java.spring.boot.starter.webmvc.version}</version>
+      </dependency>
+  </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.microservices.tutorial</groupId>
+      <artifactId>servicecommon</artifactId>
+      <version>0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.graphql-java</groupId>
+      <artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${finalName}</finalName>
+  </build>
+
+
+</project>

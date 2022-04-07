@@ -1,49 +1,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>net.microservices.tutorial</groupId>
-    <artifactId>container-microservice</artifactId>
-    <version>0.1</version>
-    <packaging>pom</packaging>
-    <parent>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>2021.0.1</version>
-        <relativePath></relativePath>
-    </parent>
-    <modules>
-        <module>servicecommon</module>
-        <module>registrationservice</module>
-        <module>persistenceservice</module>
-        <module>timeconsumingservice</module>
-        <module>configurationservice</module>
-        <module>actorserverservice</module>
-        <module>actorclientservice</module>
-        <module>docker</module>
-    </modules>
-    <properties>
-        <!-- TEST -->
-      <junit.version>4.13.2</junit.version>
-        <!-- LOG -->
-        <slf4j.version>1.7.12</slf4j.version>
-        <!-- PLUGINS -->
-        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <!-- CONFIGURATIONS -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.source>11</java.source>
-        <java.target>11</java.target>
-        <kotlin.version>1.6.10</kotlin.version>
-    </properties>
-    <dependencies>
-        <dependency>
-            <!-- Setup Spring Boot -->
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <!-- Setup Spring MVC & REST, use Embedded Tomcat -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.microservices.tutorial</groupId>
+  <artifactId>container-microservice</artifactId>
+  <version>0.1</version>
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-parent</artifactId>
+    <version>2021.0.1</version>
+    <relativePath></relativePath>
+  </parent>
+  <modules>
+    <module>servicecommon</module>
+    <module>registrationservice</module>
+    <module>persistenceservice</module>
+    <module>timeconsumingservice</module>
+    <module>configurationservice</module>
+    <module>actorserverservice</module>
+    <module>actorclientservice</module>
+    <module>graphqlservice</module>
+    <module>docker</module>
+  </modules>
+  <properties>
+    <!-- TEST -->
+    <junit.version>4.13.2</junit.version>
+    <!-- LOG -->
+    <slf4j.version>1.7.12</slf4j.version>
+    <!-- PLUGINS -->
+    <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <!-- CONFIGURATIONS -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.source>11</java.source>
+    <java.target>11</java.target>
+    <kotlin.version>1.6.10</kotlin.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <!-- Setup Spring Boot -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <!-- Setup Spring MVC & REST, use Embedded Tomcat -->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -99,34 +100,35 @@
         <version>${junit.version}</version>
       </dependency>
 
-    </dependencies>
-    <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
-        <resources>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                    <include>**/*.yml</include>
-                    <include>**/*.sql</include>
-                    <include>**/*.html</include>
-                    <include>**/*.conf</include>
-                    <include>**/*.properties</include>
-                </includes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-        </testResources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+  </dependencies>
+  <build>
+    <sourceDirectory>src/main/kotlin</sourceDirectory>
+    <testSourceDirectory>src/test/kotlin</testSourceDirectory>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.yml</include>
+          <include>**/*.sql</include>
+          <include>**/*.html</include>
+          <include>**/*.conf</include>
+          <include>**/*.properties</include>
+          <include>**/*.graphql</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.source}</source>
                     <target>${java.target}</target>
